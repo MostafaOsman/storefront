@@ -26,6 +26,9 @@ class Product(models.Model):
     collection= models.ForeignKey(Collection, on_delete=models.PROTECT)
     promotions = models.ManyToManyField(Promotion)
 
+    def __str__(self):
+        return self.title
+
 class Customer(models.Model):
     MEMBERSHIP_BRONZE= 'B'
     MEMBERSHIP_SILVER= 'S'
@@ -83,3 +86,11 @@ class Cart_Item(models.Model):
     cart = models.ForeignKey(Cart,on_delete= models.CASCADE)
     product= models.ForeignKey(Product,on_delete= models.CASCADE)
     quantity = models.PositiveSmallIntegerField()
+
+
+class Review(models.Model):    
+    product= models.ForeignKey(Product,on_delete = models.CASCADE, related_name ='reviews')
+    name= models.CharField(max_length=255)
+    description= models.TextField()
+    date= models.DateField(auto_now_add=True)
+    

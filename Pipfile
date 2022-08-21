@@ -8,6 +8,8 @@ django = "*"
 drf-nested-routers = "*"
 djangorestframework = "*"
 mysqlclient = "*"
+mysql = "*"
+shell = "*"
 
 [dev-packages]
 

@@ -8,7 +8,7 @@ from pprint import pprint
 
 
 router = routers.DefaultRouter()
-router.register('products',views.ProductViewSet)
+router.register('products',views.ProductViewSet,'products')
 router.register('collections',views.CollectionViewSet)
 
 products_router = routers.NestedDefaultRouter(router, 'products', lookup = 'product')

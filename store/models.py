@@ -3,6 +3,7 @@ from itertools import product
 from random import choices
 from unicodedata import decimal
 from django.db import models
+import uuid
 
 # Create your models here.
 
@@ -77,16 +78,17 @@ class Address(models.Model):
     customer = models.ForeignKey(Customer, on_delete= models.CASCADE)
 
 class OrderItem(models.Model):
-    Order= models.ForeignKey(Order, on_delete=models.PROTECT)
+    order= models.ForeignKey(Order, on_delete=models.PROTECT)
     product = models.ForeignKey(Product,on_delete=models.PROTECT)
     quantity = models.PositiveSmallIntegerField()    
     unit_price = models.DecimalField(max_digits=6, decimal_places=2)
 
 class Cart(models.Model):
+    id = models.UUIDField(primary_key=True,default=uuid.uuid4)
     created_at = models.DateTimeField(auto_now_add=True)
 
 class Cart_Item(models.Model):
-    cart = models.ForeignKey(Cart,on_delete= models.CASCADE)
+    cart = models.ForeignKey(Cart,on_delete= models.CASCADE,related_name= 'items')
     product= models.ForeignKey(Product,on_delete= models.CASCADE)
     quantity = models.PositiveSmallIntegerField()
 

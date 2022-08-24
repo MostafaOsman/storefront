@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "df83a88f3226c7d9232926a61709e9aa10902c6f7f96fa30b14f4e7ebc1be40b"
+            "sha256": "e3b2ba19cccc122aefe2a81f01542524e306f54d4cfa2e5aca4583d58fed5d11"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -31,6 +31,22 @@
             ],
             "index": "pypi",
             "version": "==4.1"
+        },
+        "django-debug-toolbar": {
+            "hashes": [
+                "sha256:95fc2fd29c56cc86678aae9f6919ececefe892f2a78c4004b193a223a8380c3d",
+                "sha256:fe7fe3f21865218827e2162ecc06eba386dfe8cffe4f3501c49bb4359e06a0e6"
+            ],
+            "index": "pypi",
+            "version": "==3.6.0"
+        },
+        "django-filter": {
+            "hashes": [
+                "sha256:ed429e34760127e3520a67f415bec4c905d4649fbe45d0d6da37e6ff5e0287eb",
+                "sha256:ed473b76e84f7e83b2511bb2050c3efb36d135207d0128dfe3ae4b36e3594ba5"
+            ],
+            "index": "pypi",
+            "version": "==22.1"
         },
         "djangorestframework": {
             "hashes": [
@@ -75,6 +91,14 @@
                 "sha256:cea221417204f2d1a2aa03ddae3e867921971d0d76f14d87abb4414415bbdcf5"
             ],
             "version": "==2022.2.1"
+        },
+        "routers": {
+            "hashes": [
+                "sha256:47c9af347f3c5d7f1590b9f1084ea09a56a91b7c4705756d46c30f262d6c640a",
+                "sha256:8b2b15d8c9f5b5a4c979508ba199377bb1883e537d3515f012d6811356e68b75"
+            ],
+            "index": "pypi",
+            "version": "==0.10.1"
         },
         "shell": {
             "hashes": [

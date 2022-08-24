@@ -1,8 +1,9 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
-from .models import Collection, Product, Review
+from .models import Cart, Collection, Product, Review
 from decimal import Decimal
 from rest_framework.serializers import DecimalField
+import uuid
 
 
 
@@ -32,3 +33,8 @@ class ReviewSerializer(serializers.ModelSerializer):
         return Review.objects.create(product_id = product_id, **validated_data)
 
 
+class CartSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(read_only=True)
+    class Meta:
+        model= Cart
+        fields = ['id']

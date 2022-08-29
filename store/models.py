@@ -4,6 +4,8 @@ from random import choices
 from unicodedata import decimal
 from django.db import models
 import uuid
+from django.core.validators import MaxValueValidator, MinValueValidator
+
 
 # Create your models here.
 
@@ -90,7 +92,7 @@ class Cart(models.Model):
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart,on_delete= models.CASCADE,related_name= 'items')
     product= models.ForeignKey(Product,on_delete= models.CASCADE)
-    quantity = models.PositiveSmallIntegerField()
+    quantity = models.PositiveSmallIntegerField(validators = [MinValueValidator(1)])
 
 
 class Review(models.Model):    

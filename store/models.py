@@ -19,8 +19,11 @@ class Collection(models.Model):
     title= models.CharField(max_length=255)
     featured_product= models.ForeignKey('Product',on_delete=models.SET_NULL,null=True,related_name='collections')
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.title
+
+    class Meta:
+        ordering= ['title']    
 
 class Product(models.Model):
     title= models.CharField(max_length=255)
@@ -32,8 +35,11 @@ class Product(models.Model):
     collection= models.ForeignKey(Collection, on_delete=models.PROTECT)
     promotions = models.ManyToManyField(Promotion)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.title
+
+    class Meta:
+        ordering= ['title']
 
 class Customer(models.Model):
     MEMBERSHIP_BRONZE= 'B'
@@ -51,11 +57,15 @@ class Customer(models.Model):
     birth_date = models.DateField(null=True)
     membership = models.CharField(choices= MEMBERSHIP_CHOICES,default=MEMBERSHIP_BRONZE,max_length=255)
    
+    def __str__(self) -> str:
+         return f'{self.first_name} {self.last_name}'
+
     class Meta:
+        ordering= ['first_name','last_name']
         db_table= 'store_customers'
         indexes = [
-            models.Index(fields=['last_name','first_name'])
-        ]
+             models.Index(fields=['last_name','first_name'])]
+        
     
 
 class Order(models.Model):
@@ -71,6 +81,9 @@ class Order(models.Model):
     payment_status= models.CharField(max_length=1,choices=ORDER_CHOICES,default=PAYMENT_STATUS_PENDING)
     # we should never delete the orders because the represent our sales
     customer= models.ForeignKey(Customer,on_delete= models.PROTECT)
+
+
+   
 
 #one to one relationship
 class Address(models.Model):

@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'playground',
     'debug_toolbar',
     'store',
-    'store_custom',
     'likes',
     'tags'
 ]
@@ -148,3 +147,6 @@ REST_FRAMEWORK = {
     'COERCE_DECIMAL_TO_STRING':False,
     'PAGE_SIZE': 10
 }
+
+
+ 

@@ -1,7 +1,10 @@
 from django.contrib import admin, messages
+
+from tags.models import TaggedItem
 from . import models
 from django.db.models import Count
 from django.db.models.query import QuerySet
+
 
 
 
@@ -19,6 +22,7 @@ class InventoryFilter(admin.SimpleListFilter):
             return queryset.filter(inventory__lt=10)
 
 
+
 #Register your models here.
 @admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin):
@@ -33,6 +37,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_per_page = 10
     list_select_related = ['collection']
     list_filter = ['collection','last_update',InventoryFilter]
+    search_fields= ['title']
 
     def collection_title(self,product):
         return product.collection.title
@@ -78,10 +83,16 @@ class CollectionAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
          return super().get_queryset(request).annotate(products_count= Count('product'))
 
+class OrderItemInline(admin.TabularInline):
+    autocomplete_fields = ['product']
+    min_num=1
+    max_num=10
+    model = models.OrderItem
+    extra=0
+
 @admin.register(models.Order)
 class OrderAdmin(admin.ModelAdmin):
     autocomplete_fields = ['customer']
-    list_display= ['id','placed_at','customer','payment_status']
-    list_editable = ['payment_status']
-    list_select_related = ['customer']
-    list_per_page = 10
+    inlines = [OrderItemInline] 
+    list_display= ['id','placed_at','customer']
+   

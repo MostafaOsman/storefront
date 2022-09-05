@@ -1,8 +1,10 @@
 from concurrent.futures.process import _python_exit
+from django.contrib import admin
 from itertools import product
 from random import choices
 from unicodedata import decimal
 from django.db import models
+from django.conf import settings
 import uuid
 from django.core.validators import MaxValueValidator, MinValueValidator
 
@@ -51,21 +53,25 @@ class Customer(models.Model):
         (MEMBERSHIP_SILVER,'Silver'),
         (MEMBERSHIP_GOLD,'Gold')
     ]
-    first_name= models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255)
-    email = models.EmailField(unique=True)
+    
     phone = models.CharField(max_length=255)
-    birth_date = models.DateField(null=True)
+    birth_date = models.DateField(null=True,blank=True)
     membership = models.CharField(choices= MEMBERSHIP_CHOICES,default=MEMBERSHIP_BRONZE,max_length=255)
-   
+    user= models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     def __str__(self) -> str:
-         return f'{self.first_name} {self.last_name}'
+         return f'{self.user.first_name} {self.user.last_name}'
+    @admin.display(ordering='user__first_name')
+    def first_name(self):
+        return self.user.first_name
+    @admin.display(ordering= 'user__last_name')
+    def last_name(self):
+        return self.user.last_name
+
 
     class Meta:
-        ordering= ['first_name','last_name']
-        db_table= 'store_customers'
-        indexes = [
-             models.Index(fields=['last_name','first_name'])]
+        ordering= ['user__first_name','user__last_name']
+       
+        
         
     
 
@@ -83,6 +89,10 @@ class Order(models.Model):
     # we should never delete the orders because the represent our sales
     customer= models.ForeignKey(Customer,on_delete= models.PROTECT)
 
+    class Meta:
+        permissions= [
+            ('cancel order','can cancel order')
+        ]
 
    
 

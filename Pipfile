@@ -13,6 +13,8 @@ shell = "*"
 django-filter = "*"
 django-debug-toolbar = "*"
 routers = "*"
+djoser = "*"
+djangorestframework-simplejwt = "*"
 
 [dev-packages]
 

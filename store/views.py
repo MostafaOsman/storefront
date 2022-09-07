@@ -6,12 +6,14 @@ from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser, DjangoModelPermissions,DjangoModelPermissionsOrAnonReadOnly
 from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from core.models import User
 from store.pagination import DefaultPagination
-from .models import Cart, Product, OrderItem, Collection, Review, CartItem, Customer
-from .serializers import AddCartItemSerializer, CartSerializer, ProductSerializer, CollectionSerializer, ReviewSerializer, CartItemSerializer, UpdateCartItemSerializer,CustomerSerializer
+from .models import Cart, Order, Product, OrderItem, Collection, Review, CartItem, Customer
+from .serializers import CreateOrderSerializer,  OrderItemSerializer, AddCartItemSerializer, CartSerializer, ProductSerializer, CollectionSerializer, ReviewSerializer, CartItemSerializer, UpdateCartItemSerializer,CustomerSerializer, OrderSerializer
 from .filters import ProductFilter
+from .permissions import FUllDjangoModelPermissions, IsAdminOrReadOnly, ViewCustomerHistoryPermission
 
 # Create your views here.
 
@@ -22,6 +24,7 @@ class ProductViewSet(ModelViewSet):
     filterset_fields = ['collection_id','unit_price']
     filterset_class = ProductFilter
     pagination_class = DefaultPagination
+    permission_classes = [IsAdminOrReadOnly]
     search_fields= ['title','description']
     ordering_fields = ['unit_price','last_update']
     def get_serializer_context(self):
@@ -45,6 +48,8 @@ class ProductViewSet(ModelViewSet):
 class CollectionViewSet(ModelViewSet):
     queryset= Collection.objects.annotate(products_count= Count('featured_product')).all() 
     serializer_class = CollectionSerializer
+    permission_classes  = [IsAdminOrReadOnly]
+
 
     def get_serializer_context(self):
             return {'request': self.request}
@@ -94,11 +99,17 @@ class CartItemViewSet(ModelViewSet):
             .select_related('product')
 
 
-class CustomerViewSet(CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
+class CustomerViewSet(ModelViewSet):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
+    permission_classes = [IsAdminUser]
 
-    @action(detail=False, methods = ['GET','PUT'])
+    @action(detail=True, permission_classes=[ViewCustomerHistoryPermission])
+    def history(self, request, pk):
+        return Response('ok')
+
+
+    @action(detail=False, methods = ['GET','PUT'], permission_classes = [IsAuthenticated])
     def me(self, request):
             (customer, created)= Customer.objects.get_or_create(user_id= request.user.id)
             if request.method == 'GET':
@@ -112,6 +123,34 @@ class CustomerViewSet(CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, Ge
         
 
 
+class OrderViewSet(ModelViewSet):
+
+
+    permission_classes = [IsAuthenticated]
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return CreateOrderSerializer
+        return OrderSerializer     
+
+    def get_serializer_context(self):
+        return {'user_id':self.request.user.id}
+
+
+
+    def get_queryset(self):
+        user= self.request.user
+        if user.is_staff:
+            return Order.objects.all()
+
+        (customer_id, created) = Order.objects.only('id').get_or_create(user_id= user.id)
+        return Order.objects.filter(customer_id = customer_id)
+
+
+
+class OrderItemViewSet(ModelViewSet):
+    queryset = OrderItem.objects.prefetch_related('items__product').all()
+    serializer_class = OrderItemSerializer
 
 
 

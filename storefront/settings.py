@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'djoser', 
     'django_filters',
-    'playground',
     'debug_toolbar',
     'store',
     'likes',
@@ -150,7 +149,11 @@ REST_FRAMEWORK = {
     'COERCE_DECIMAL_TO_STRING':False,
     
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',)
+        'rest_framework_simplejwt.authentication.JWTAuthentication',),
+
+    #  'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAuthenticated'
+    #  ]
 }
 
 
@@ -167,3 +170,4 @@ DJOSER= {
 SIMPLE_JWT = {
      'AUTH_HEADER_TYPES': ('JWT',),
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),}
+

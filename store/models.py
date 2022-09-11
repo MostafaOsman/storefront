@@ -60,9 +60,11 @@ class Customer(models.Model):
     user= models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     def __str__(self) -> str:
          return f'{self.user.first_name} {self.user.last_name}'
+
     @admin.display(ordering='user__first_name')
     def first_name(self):
         return self.user.first_name
+        
     @admin.display(ordering= 'user__last_name')
     def last_name(self):
         return self.user.last_name
@@ -107,7 +109,7 @@ class Address(models.Model):
 
 class OrderItem(models.Model):
     order= models.ForeignKey(Order, on_delete=models.PROTECT,related_name='items')
-    product = models.ForeignKey(Product,on_delete=models.PROTECT)
+    product = models.ForeignKey(Product,on_delete=models.PROTECT,related_name='product')
     quantity = models.PositiveSmallIntegerField()    
     unit_price = models.DecimalField(max_digits=6, decimal_places=2)
 

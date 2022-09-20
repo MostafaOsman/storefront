@@ -1,4 +1,9 @@
 {
     "git.ignoreLimitWarning": true,
-    "window.titleSeparator": " -activeEditorLong"
+    "window.titleSeparator": " -activeEditorLong",
+    "python.testing.pytestArgs": [
+        "."
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
 }

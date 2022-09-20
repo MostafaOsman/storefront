@@ -6,6 +6,7 @@ from rest_framework.serializers import DecimalField
 from rest_framework.serializers import ModelSerializer
 from .models import Cart, CartItem, Collection, Customer, Order, OrderItem, Product, Review
 import uuid
+from .signals import order_created
 
 
 
@@ -109,7 +110,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
     product=SimpleProductSerializer()
     class Meta:
         model= OrderItem
-        fields= ['id','product','quantity','unit_price']
+        fields= ['id','product','quantity',]
          
 class OrderSerializer(serializers.ModelSerializer):
     id= serializers.IntegerField()
@@ -133,8 +134,6 @@ class CreateOrderSerializer(serializers.Serializer):
             raise serializers.ValidationError('The cart is empty.')    
         return cart_id    
 
-
-
     def save(self, **kwargs):
         #print(self.validated_data['cart_id'])
         #print(self.context['user_id'])
@@ -155,6 +154,8 @@ class CreateOrderSerializer(serializers.Serializer):
             OrderItem.objects.bulk_create(order_items)
 
             Cart.objects.filter(pk=cart_id).delete()
+
+            order_created.send_robust(self.__class__, order= order)
 
             return order
         
